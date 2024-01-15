@@ -1,66 +1,70 @@
 package br.com.java.io.IOCharacter;
 
-
 import java.io.*;
 
 
 public class Exercicio3IOCaracter {
-    public static void copiarArquivo() throws IOException {
-        File f = new File("/home/cami/git/curso-dio-intro-java-io/recomendacoes.txt");
-        String nameArquivo = f.getName();
+    public static void copiarArquivo(String arquivo) throws IOException {
+        File f = new File(arquivo); 
+        String nomeDoArquivoOriginal = f.getName(); 
 
-        
-        BufferedReader br = new BufferedReader(new FileReader(nameArquivo));
-        String line = br.readLine();
+        BufferedReader br = new BufferedReader(new FileReader(nomeDoArquivoOriginal)); //abrir arquivo que será copiado
 
-        String nameArquivoCopy = nameArquivo.substring(0, nameArquivo.indexOf(".")).concat("-copy.txt");
-        File fcopy = new File(nameArquivoCopy);
+      
+        String nomeDoArquivoCopy = nomeDoArquivoOriginal.substring(0, nomeDoArquivoOriginal.indexOf("."))
+                .concat("-copy.txt");
 
+        File fcopy = new File(nomeDoArquivoCopy); 
         BufferedWriter bw = new BufferedWriter(new FileWriter(fcopy.getName()));
 
-        do{
-            bw.write(line);
-            bw.newLine();
-            bw.flush();
-            line = br.readLine();
-        }while(!(line == null));
+        String linha = br.readLine();
+        do { 
+            bw.write(linha);
+            bw.newLine(); 
+            linha = br.readLine(); 
+        } while(!(linha == null));
+        bw.flush(); 
 
-        System.out.printf("Arquivo \"%s\" copiado com sucesso! Com o tamanho '%d' bytes.\n", f.getName(), f.length());
-        System.out.printf("Arquivo \"%s\" criado com sucesso! Com o tamanho '%d' bytes.\n", fcopy.getName(), fcopy.length());
+        PrintWriter pw = new PrintWriter(System.out); 
+        pw.printf("Arquivo '%s' criado com sucesso| \n diretório: '%s'\n", fcopy.getName(),
+                fcopy.getAbsolutePath());
+        pw.println(" Recomendações de 3 livros: ");
+        pw.flush(); 
 
-        PrintWriter pw = new PrintWriter(System.out);
-        pw.println("Recomende 3 livros: ");
-        pw.flush();
+        adicionarInformacoesArquivoJaExistente(nomeDoArquivoCopy); 
 
-        adicionarInfoNoArquivo(fcopy.getName());
+        pw.printf("Ok! Tudo certo. Tamanho do arquivo %d bytes.", fcopy.length()); 
+        pw.flush(); 
 
-        pw.printf("Ok! Tudo certo. Tamanho do arquivo '%d' bytes.", fcopy.length());
-
-        br.close();
-        bw.close();
-        pw.close();
-
+        
+        br.close(); 
+        bw.close(); 
+        pw.close(); 
 
     }
 
-    public static void adicionarInfoNoArquivo(String arquivo) throws IOException {
+    public static void adicionarInformacoesArquivoJaExistente(String arquivoCopy) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+       
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(arquivoCopy, true));
+      
+
         String line = br.readLine();
+        do { 
+            bw.write(line); 
+            bw.newLine(); 
+            line = br.readLine(); 
+        } while(!line.equalsIgnoreCase("fim"));
+    
+        bw.flush();
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(arquivo, true));
-
-        do{
-            bw.write(line);
-            bw.newLine();
-            line = br.readLine();
-        }while(!(line.equalsIgnoreCase("fim")));
-
-        br.close();
-        bw.close();
+     
+        br.close(); 
+        bw.close(); 
     }
 
     public static void main(String[] args) throws IOException {
-        copiarArquivo();
-
+        copiarArquivo("recomendacoes.txt");
     }
 }
